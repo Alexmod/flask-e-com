@@ -54,7 +54,7 @@ def create_app(config=None, app_name=None, blueprints=None):
     return app
 
 
-def configure_app(app, config):
+def configure_app(app, config=None):
     """
     Configure app from object, parameter and env.
     @config the config of application
@@ -63,7 +63,11 @@ def configure_app(app, config):
     """
     BaseConfig = ConfigsModel.BaseConfig
 
-    config = ConfigsModel.get_config_from_host(app.name)
+    if config is None:
+        config = ConfigsModel.get_config_from_host(app.name)
+    elif isinstance(config, str):
+        config = ConfigsModel.get_config(config, app.name)
+
     app.config.from_object(config)
 
     # Override setting by env var without touching codes.
